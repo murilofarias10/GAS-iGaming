@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import React, { useState, useRef, useCallback, memo } from "react";
 import {
   ComposableMap,
   Geographies,
@@ -76,6 +76,15 @@ function buildStateIntensity(posts) {
 
 const UsMap = memo(function UsMap({ posts }) {
   const [tooltip, setTooltip] = useState(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const containerRef = useRef(null);
+
+  const handleMouseMove = useCallback((e) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }, []);
+
   const intensity    = buildStateIntensity(posts);
   const counts       = Object.values(intensity);
   const maxIntensity = counts.length > 0 ? Math.max(...counts) : 1;
@@ -127,7 +136,12 @@ const UsMap = memo(function UsMap({ posts }) {
       </div>
 
       {/* CSS vars --map-state-fill / --map-state-stroke / --map-bg defined in index.css */}
-      <div className="rounded-lg overflow-hidden" style={{ background: "var(--map-bg)" }}>
+      <div
+        ref={containerRef}
+        className="rounded-lg overflow-hidden relative"
+        style={{ background: "var(--map-bg)" }}
+        onMouseMove={handleMouseMove}
+      >
         <ComposableMap
           projection="geoAlbersUsa"
           style={{ width: "100%", height: "auto" }}
@@ -151,9 +165,16 @@ const UsMap = memo(function UsMap({ posts }) {
             }
           </Geographies>
 
-          {/* Inactive state labels — subtle, no dot */}
+          {/* Inactive state labels — subtle, no dot, with invisible hit area */}
           {US_STATES.filter((s) => !intensity[s.abbr]).map((state) => (
-            <Marker key={`label-${state.abbr}`} coordinates={state.coordinates}>
+            <Marker
+              key={`label-${state.abbr}`}
+              coordinates={state.coordinates}
+              onMouseEnter={() => setTooltip({ name: state.name, abbr: state.abbr, count: 0 })}
+              onMouseLeave={() => setTooltip(null)}
+            >
+              {/* Transparent hit area */}
+              <circle r={10} fill="transparent" style={{ cursor: "default" }} />
               <text
                 textAnchor="middle"
                 y={2}
@@ -231,12 +252,38 @@ const UsMap = memo(function UsMap({ posts }) {
       </div>
 
       {tooltip && (
-        <div className="absolute top-5 right-5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs pointer-events-none shadow-md">
-          <div className="font-medium text-slate-800 dark:text-slate-200">
-            {tooltip.name} ({tooltip.abbr})
-          </div>
-          <div className="text-slate-500 dark:text-slate-400 mt-0.5">
-            {tooltip.count} post{tooltip.count !== 1 ? "s" : ""} detected
+        <div
+          className="absolute z-10 pointer-events-none"
+          style={{
+            left: mousePos.x + 14,
+            top:  mousePos.y - 12,
+            transform:
+              containerRef.current && mousePos.x > containerRef.current.offsetWidth - 180
+                ? "translateX(calc(-100% - 28px))"
+                : "none",
+          }}
+        >
+          <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs shadow-lg">
+            <div className="font-semibold text-slate-800 dark:text-slate-200">
+              {tooltip.name}
+              <span className="ml-1.5 font-normal text-slate-400 dark:text-slate-500">
+                {tooltip.abbr}
+              </span>
+            </div>
+            <div className="mt-1 text-slate-500 dark:text-slate-400">
+              {tooltip.count > 0
+                ? (
+                  <span className="flex items-center gap-1">
+                    <span
+                      className="w-1.5 h-1.5 rounded-full inline-block"
+                      style={{ background: tooltip.count >= 1 ? "#FF600F" : "#0041ED" }}
+                    />
+                    {tooltip.count} post{tooltip.count !== 1 ? "s" : ""} detected
+                  </span>
+                )
+                : "No posts detected yet"
+              }
+            </div>
           </div>
         </div>
       )}
