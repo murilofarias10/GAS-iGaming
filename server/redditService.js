@@ -154,6 +154,7 @@ async function fetchAndSavePosts() {
   }
 
   const existingMap = new Map(existing.map((p) => [p.id, p]));
+  const existingIds = new Set(existing.map((p) => p.id));
 
   for (const post of allNewPosts) {
     if (!existingMap.has(post.id)) {
@@ -161,6 +162,8 @@ async function fetchAndSavePosts() {
     }
     // Preserve existing classification if post was already analyzed
   }
+
+  const truly_new = allNewPosts.filter((p) => !existingIds.has(p.id)).length;
 
   const merged = Array.from(existingMap.values()).sort(
     (a, b) => b.created_utc - a.created_utc
@@ -170,7 +173,7 @@ async function fetchAndSavePosts() {
 
   return {
     total: merged.length,
-    new_posts: allNewPosts.length,
+    new_posts: truly_new,
     subreddits: RSS_FEEDS.map((f) => f.subreddit),
   };
 }

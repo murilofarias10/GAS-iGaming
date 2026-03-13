@@ -11,42 +11,41 @@ const US_MAP_URL =
   "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
 // States where US iGaming / sports betting is most active.
-// Complaints are mapped here to show real business context.
 const IGAMING_STATES = [
-  { name: "New Jersey", coordinates: [-74.4057, 40.0583], key: "nj" },
-  { name: "Pennsylvania", coordinates: [-77.1945, 41.2033], key: "pa" },
-  { name: "Michigan", coordinates: [-84.506, 44.3467], key: "mi" },
-  { name: "New York", coordinates: [-74.9981, 42.1657], key: "ny" },
-  { name: "Colorado", coordinates: [-105.7821, 39.5501], key: "co" },
-  { name: "Illinois", coordinates: [-89.3985, 40.6331], key: "il" },
-  { name: "Arizona", coordinates: [-111.431, 33.7298], key: "az" },
-  { name: "Virginia", coordinates: [-78.6569, 37.4316], key: "va" },
-  { name: "Iowa", coordinates: [-93.0977, 41.878], key: "ia" },
-  { name: "Indiana", coordinates: [-86.1349, 40.2672], key: "in" },
-  { name: "Tennessee", coordinates: [-86.58, 35.5175], key: "tn" },
-  { name: "Connecticut", coordinates: [-72.7622, 41.6032], key: "ct" },
-  { name: "Louisiana", coordinates: [-91.9623, 31.1695], key: "la" },
-  { name: "Kansas", coordinates: [-98.4842, 39.0119], key: "ks" },
-  { name: "Maryland", coordinates: [-76.6413, 39.0458], key: "md" },
+  { name: "New Jersey",    coordinates: [-74.4057,  40.0583], key: "nj", abbr: "NJ" },
+  { name: "Pennsylvania",  coordinates: [-77.1945,  41.2033], key: "pa", abbr: "PA" },
+  { name: "Michigan",      coordinates: [-84.506,   44.3467], key: "mi", abbr: "MI" },
+  { name: "New York",      coordinates: [-74.9981,  42.1657], key: "ny", abbr: "NY" },
+  { name: "Colorado",      coordinates: [-105.7821, 39.5501], key: "co", abbr: "CO" },
+  { name: "Illinois",      coordinates: [-89.3985,  40.6331], key: "il", abbr: "IL" },
+  { name: "Arizona",       coordinates: [-111.431,  33.7298], key: "az", abbr: "AZ" },
+  { name: "Virginia",      coordinates: [-78.6569,  37.4316], key: "va", abbr: "VA" },
+  { name: "Iowa",          coordinates: [-93.0977,  41.878],  key: "ia", abbr: "IA" },
+  { name: "Indiana",       coordinates: [-86.1349,  40.2672], key: "in", abbr: "IN" },
+  { name: "Tennessee",     coordinates: [-86.58,    35.5175], key: "tn", abbr: "TN" },
+  { name: "Connecticut",   coordinates: [-72.7622,  41.6032], key: "ct", abbr: "CT" },
+  { name: "Louisiana",     coordinates: [-91.9623,  31.1695], key: "la", abbr: "LA" },
+  { name: "Kansas",        coordinates: [-98.4842,  39.0119], key: "ks", abbr: "KS" },
+  { name: "Maryland",      coordinates: [-76.6413,  39.0458], key: "md", abbr: "MD" },
 ];
 
-// Derive complaint intensity per state from geolocation-flagged posts.
-// Since Reddit posts don't carry state data, we distribute HIGH-alert
-// geo posts across the top iGaming states for illustrative purposes.
+// Build real complaint counts per state from posts that have a state field.
+// Falls back to empty (no markers lit) if no state data has been collected yet.
 function buildStateIntensity(posts) {
   const geoPosts = posts.filter(
-    (p) => p.classification === "Geolocation error" && p.alert_level === "HIGH"
+    (p) => p.classification === "Geolocation error" && p.state
   );
-  const total = geoPosts.length;
-  if (total === 0) return {};
+  if (geoPosts.length === 0) return {};
 
-  // Weight the first few states higher to show a realistic distribution
-  const weights = [0.2, 0.15, 0.12, 0.1, 0.08, 0.07, 0.06, 0.05, 0.04, 0.03];
+  const abbrToKey = Object.fromEntries(
+    IGAMING_STATES.map((s) => [s.abbr, s.key])
+  );
+
   const result = {};
-  IGAMING_STATES.forEach((state, i) => {
-    const w = weights[i] ?? 0.02;
-    result[state.key] = Math.round(total * w);
-  });
+  for (const post of geoPosts) {
+    const key = abbrToKey[post.state?.toUpperCase()];
+    if (key) result[key] = (result[key] || 0) + 1;
+  }
   return result;
 }
 
@@ -83,7 +82,7 @@ const UsMap = memo(function UsMap({ posts }) {
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
             {totalGeo > 0
-              ? `${totalGeo} geolocation issues across monitored states`
+              ? `${totalGeo} geolocation issues — markers show posts with detected state`
               : "Run AI analysis to see geolocation complaint hotspots"}
           </p>
         </div>
@@ -171,7 +170,7 @@ const UsMap = memo(function UsMap({ posts }) {
           <div className="font-medium text-slate-200">{tooltip.name}</div>
           <div className="text-slate-400 mt-0.5">
             {tooltip.count > 0
-              ? `~${tooltip.count} geo issues`
+              ? `${tooltip.count} geo issue${tooltip.count !== 1 ? "s" : ""}`
               : "No geo issues detected"}
           </div>
         </div>

@@ -90,6 +90,9 @@ export default function PostsTable({ posts }) {
                   Date
                 </th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">
+                  Location
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">
                   Link
                 </th>
               </tr>
@@ -146,6 +149,15 @@ export default function PostsTable({ posts }) {
                       {formatDate(post.created_utc)}
                     </td>
                     <td className="px-4 py-3">
+                      {post.state ? (
+                        <span className="text-xs font-mono font-semibold bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md">
+                          {post.state}
+                        </span>
+                      ) : (
+                        <span className="text-slate-700 text-xs">—</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
                       <a
                         href={post.url}
                         target="_blank"
@@ -161,7 +173,7 @@ export default function PostsTable({ posts }) {
                   {/* Expanded row for AI reason */}
                   {expandedId === post.id && post.reason && (
                     <tr className="bg-slate-800/30">
-                      <td colSpan={6} className="px-4 py-3">
+                      <td colSpan={7} className="px-4 py-3">
                         <div className="flex items-start gap-2">
                           <span className="text-violet-400 text-sm mt-0.5">🤖</span>
                           <div>

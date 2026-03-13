@@ -25,6 +25,32 @@ GeoComply/
             └── Toast.jsx
 ```
 
+                    ┌─────────────┐
+                    │    USER     │
+                    └──────┬──────┘
+                           │
+                           ▼
+              ┌────────────────────────┐
+              │  REACT DASHBOARD       │
+              │  (Frontend – port 3000)│
+              └────────────┬───────────┘
+                            │
+              HTTP (proxy to 5000)
+                            │
+                            ▼
+              ┌────────────────────────┐
+              │  EXPRESS API           │
+              │  (Backend – port 5000) │
+              └───┬──────────┬─────────┘
+                  │          │
+        ┌─────────┘          └─────────┐
+        ▼                              ▼
+┌───────────────┐            ┌─────────────────┐
+│ reddit_posts  │            │ EXTERNAL        │
+│ .json         │            │ • FetchRSS     │
+│ (storage)     │            │ • OpenAI API    │
+└───────────────┘            └─────────────────┘
+
 ## Setup
 
 ### 1. Get API credentials

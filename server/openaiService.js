@@ -27,11 +27,14 @@ Alert levels:
 - "MEDIUM" – Non-critical bugs, repeated user confusion, or posts with multiple complaints.
 - "LOW" – Minor issues, general confusion, or non-technical posts.
 
+Additionally, if the post text or title mentions a specific U.S. state (by name or abbreviation), extract it as a 2-letter state code (e.g., "NJ", "TX", "CA"). If no state is mentioned, set "state" to null.
+
 Respond ONLY with valid JSON in this exact format (no extra text):
 {
   "classification": "<one of the four categories above>",
   "alert_level": "<HIGH|MEDIUM|LOW>",
-  "reason": "<one concise sentence explaining your decision>"
+  "reason": "<one concise sentence explaining your decision>",
+  "state": "<2-letter US state code or null>"
 }`;
 
 /**
@@ -52,8 +55,8 @@ Body: ${post.text ? post.text.slice(0, 1000) : "(no body text)"}`;
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userMessage },
     ],
-    temperature: 0.2,
-    max_tokens: 200,
+    temperature: 0.2, /* temperature is the randomness of the model's output */
+    max_tokens: 200, /* max_tokens is the maximum number of tokens in the output*/
   });
 
   const raw = response.choices[0].message.content.trim();
@@ -61,12 +64,16 @@ Body: ${post.text ? post.text.slice(0, 1000) : "(no body text)"}`;
   // Parse the JSON response from OpenAI
   const parsed = JSON.parse(raw);
 
-  // Validate expected fields are present
   if (!parsed.classification || !parsed.alert_level) {
     throw new Error(`Unexpected OpenAI response format: ${raw}`);
   }
 
-  return parsed;
+  return {
+    classification: parsed.classification,
+    alert_level: parsed.alert_level,
+    reason: parsed.reason,
+    state: parsed.state || null,
+  };
 }
 
 /**
@@ -93,6 +100,7 @@ async function analyzePosts(posts, onProgress) {
       post.classification = result.classification;
       post.alert_level = result.alert_level;
       post.reason = result.reason;
+      post.state = result.state;
       post.analyzed_at = new Date().toISOString();
       analyzed++;
     } catch (err) {
