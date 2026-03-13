@@ -162,21 +162,17 @@ export default function App() {
         <main className="max-w-screen-2xl mx-auto px-6 py-6 space-y-6">
           <ActionButtons loading={loading} onFetch={handleFetch} onAnalyze={handleAnalyze} onRefresh={handleRefresh} />
           <KpiCards stats={stats} />
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-            <div className="xl:col-span-2"><UsMap posts={posts} /></div>
-            <div>
-              <Filters
-                filters={filters}
-                setFilters={setFilters}
-                subreddits={SUBREDDITS}
-                classifications={CLASSIFICATIONS}
-                alertLevels={ALERT_LEVELS}
-                resultCount={filteredPosts.length}
-                totalCount={posts.length}
-              />
-            </div>
-          </div>
+          <Filters
+            filters={filters}
+            setFilters={setFilters}
+            subreddits={SUBREDDITS}
+            classifications={CLASSIFICATIONS}
+            alertLevels={ALERT_LEVELS}
+            resultCount={filteredPosts.length}
+            totalCount={posts.length}
+          />
           <PostsTable posts={filteredPosts} />
+          <UsMap posts={posts} />
         </main>
 
         {toast && <Toast message={toast.message} type={toast.type} />}

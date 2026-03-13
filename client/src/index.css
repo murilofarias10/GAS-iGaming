@@ -14,11 +14,15 @@
   --map-state-fill:   #e2e8f0;
   --map-state-stroke: #cbd5e1;
   --map-bg:           #f8fafc;
+  --map-label-fill:   #64748b;
+  --map-label-halo:   #f1f5f9;
 }
 .dark {
   --map-state-fill:   #1e293b;
   --map-state-stroke: #334155;
   --map-bg:           #020617;
+  --map-label-fill:   #94a3b8;
+  --map-label-halo:   #1e293b;
 }
 
 /* Custom scrollbar */
