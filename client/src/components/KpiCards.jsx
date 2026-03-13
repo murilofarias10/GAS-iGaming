@@ -70,24 +70,26 @@ export default function KpiCards({ stats }) {
       ))}
 
       {/* Alerts — combined H / M / L — position 2 */}
-      <div className="rounded-xl border p-4 border-gc-orange/30 bg-gc-orange/10 flex flex-col gap-2">
-        <div className="flex items-center justify-between">
+      <div className="rounded-xl border p-4 border-gc-orange/30 bg-gc-orange/10 flex flex-col gap-3">
+        <div className="flex items-center gap-2">
           <span className="text-xl">🚨</span>
         </div>
-        <div className="flex items-end gap-3">
-          <div className="flex flex-col items-center">
-            <span className="text-2xl font-bold text-gc-orange leading-none">{high}</span>
-            <span className="text-xs text-gc-orange/60 mt-0.5">HIGH</span>
+
+        <div className="grid grid-cols-3 gap-1.5">
+          <div className="flex flex-col items-center bg-gc-orange/15 rounded-lg py-2 px-1">
+            <span className="text-xl font-bold text-gc-orange leading-none">{high}</span>
+            <span className="text-[10px] font-semibold text-gc-orange/70 tracking-widest mt-1.5 uppercase">High</span>
           </div>
-          <div className="flex flex-col items-center">
-            <span className="text-2xl font-bold text-amber-600 dark:text-amber-300 leading-none">{medium}</span>
-            <span className="text-xs text-amber-500 mt-0.5">MED</span>
+          <div className="flex flex-col items-center bg-amber-500/15 rounded-lg py-2 px-1">
+            <span className="text-xl font-bold text-amber-500 dark:text-amber-400 leading-none">{medium}</span>
+            <span className="text-[10px] font-semibold text-amber-500/70 tracking-widest mt-1.5 uppercase">Med</span>
           </div>
-          <div className="flex flex-col items-center">
-            <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-300 leading-none">{low}</span>
-            <span className="text-xs text-emerald-600 dark:text-emerald-600 mt-0.5">LOW</span>
+          <div className="flex flex-col items-center bg-emerald-500/15 rounded-lg py-2 px-1">
+            <span className="text-xl font-bold text-emerald-500 dark:text-emerald-400 leading-none">{low}</span>
+            <span className="text-[10px] font-semibold text-emerald-500/70 tracking-widest mt-1.5 uppercase">Low</span>
           </div>
         </div>
+
         <div>
           <div className="text-sm font-medium text-slate-800 dark:text-slate-200">Alerts</div>
           <div className="text-xs text-slate-500 mt-0.5">By severity level</div>
