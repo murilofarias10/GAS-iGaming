@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const ALERT_STYLES = {
   HIGH:   "bg-gc-orange/20 text-gc-orange border border-gc-orange/30",
@@ -18,6 +18,10 @@ const PAGE_SIZE = 20;
 export default function PostsTable({ posts }) {
   const [page, setPage]         = useState(1);
   const [expandedId, setExpandedId] = useState(null);
+
+  useEffect(() => {
+    setPage(1);
+  }, [posts]);
 
   const totalPages = Math.ceil(posts.length / PAGE_SIZE);
   const paginated  = posts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
