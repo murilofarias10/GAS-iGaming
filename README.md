@@ -1,11 +1,11 @@
-# GeoComply iGaming Reddit Monitor
+# GAS – GeoAlert System iGaming
 
-A full-stack dashboard that monitors Reddit posts related to the U.S. iGaming industry, classifies them using OpenAI GPT, and displays alerts with a US map visualization.
+A full-stack intelligence dashboard that monitors Reddit posts related to the U.S. iGaming industry, classifies them using OpenAI GPT, and surfaces geolocation alerts with a US map visualization.
 
 ## Architecture
 
 ```
-GeoComply/
+GAS/
 ├── server/                   # Node.js + Express backend
 │   ├── server.js             # Express app & API routes
 │   ├── redditService.js      # Reddit API integration
@@ -14,7 +14,7 @@ GeoComply/
 │   └── .env                  # API credentials (fill in yours)
 └── client/                   # React + Vite + Tailwind frontend
     └── src/
-        ├── App.jsx            # Main dashboard
+        ├── App.jsx            # Main GAS dashboard
         ├── api.js             # API client
         └── components/
             ├── KpiCards.jsx   # Top KPI metrics
@@ -31,7 +31,7 @@ GeoComply/
                            │
                            ▼
               ┌────────────────────────┐
-              │  REACT DASHBOARD       │
+              │  GAS DASHBOARD         │
               │  (Frontend – port 3000)│
               └────────────┬───────────┘
                             │
@@ -98,10 +98,10 @@ npm run dev
 
 ## Dashboard Features
 
-- **Fetch Reddit Posts** – Pulls the latest posts from 8 iGaming subreddits
+- **Fetch Reddit Posts** – Pulls the latest posts from 5 iGaming subreddits via RSS
 - **Analyze with AI** – Sends unanalyzed posts to GPT-4o-mini for classification
 - **Refresh Dashboard** – Reloads data without re-fetching
-- **KPI Cards** – Total posts, geo issues, HIGH alerts, subreddits monitored
+- **KPI Cards** – Total posts, geo issues, HIGH alerts, subreddits monitored (click for detail modals)
 - **US Map** – Shows geolocation complaint hotspots across iGaming states
 - **Posts Table** – Filterable, paginated table with expandable AI reasoning
 - **Filters** – Filter by subreddit, classification, alert level, or keyword

@@ -118,12 +118,14 @@ export default function App() {
         <header className="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 px-6 py-4">
           <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-gc-blue flex items-center justify-center text-white font-extrabold text-sm tracking-tight select-none">
-                GC
-              </div>
+              <img
+                src="/images/Logo.png"
+                alt="GAS Logo"
+                className="w-10 h-10 object-contain select-none"
+              />
               <div>
-                <h1 className="text-lg font-bold text-slate-900 dark:text-white">GeoComply iGaming Monitor</h1>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Reddit intelligence dashboard</p>
+                <h1 className="text-lg font-bold text-slate-900 dark:text-white">GAS – GeoAlert System iGaming</h1>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Murilo Farias - AI Innovation Intern</p>
               </div>
             </div>
 
