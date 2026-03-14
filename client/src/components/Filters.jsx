@@ -96,8 +96,18 @@ export default function Filters({
         </div>
       </div>
 
-      {/* Results count + clear — pushed to the right */}
-      <div className="ml-auto flex items-center gap-3 shrink-0">
+      {/* Clear all — inline after last filter */}
+      {hasActiveFilters && (
+        <button
+          onClick={clearAll}
+          className="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer shrink-0"
+        >
+          Clear all
+        </button>
+      )}
+
+      {/* Results count — pushed to the right */}
+      <div className="ml-auto shrink-0">
         <span className="text-xs text-slate-400 dark:text-slate-500">
           Showing{" "}
           <span className="text-slate-700 dark:text-slate-300 font-medium">{resultCount}</span>
@@ -105,14 +115,6 @@ export default function Filters({
           <span className="text-slate-700 dark:text-slate-300 font-medium">{totalCount}</span>
           {" "}posts
         </span>
-        {hasActiveFilters && (
-          <button
-            onClick={clearAll}
-            className="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer"
-          >
-            Clear all
-          </button>
-        )}
       </div>
     </div>
   );

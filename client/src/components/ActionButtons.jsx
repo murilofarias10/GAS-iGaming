@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PasswordModal from "./PasswordModal";
 import { verifyPassword } from "../api";
 
-export default function ActionButtons({ loading, onFetch, onAnalyze, onRefresh }) {
+export default function ActionButtons({ loading, onFetch, onAnalyze }) {
   const [pendingAction, setPendingAction] = useState(null); // "fetch" | "analyze" | null
   const [authLoading, setAuthLoading]     = useState(false);
   const [authError, setAuthError]         = useState(null);
@@ -76,29 +76,6 @@ export default function ActionButtons({ loading, onFetch, onAnalyze, onRefresh }
                   d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
               Analyze with AI
-            </>
-          )}
-        </button>
-
-        <button
-          onClick={onRefresh}
-          disabled={loading.refresh}
-          className="flex items-center gap-2 bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-slate-400
-            dark:bg-slate-700 dark:hover:bg-slate-600 dark:disabled:bg-slate-800 dark:disabled:text-slate-500
-            text-slate-700 dark:text-white text-sm font-medium px-5 py-2.5 rounded-lg cursor-pointer disabled:cursor-not-allowed"
-        >
-          {loading.refresh ? (
-            <>
-              <Spinner />
-              Refreshing...
-            </>
-          ) : (
-            <>
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Refresh Dashboard
             </>
           )}
         </button>

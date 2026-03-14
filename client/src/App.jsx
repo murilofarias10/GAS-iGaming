@@ -27,7 +27,7 @@ const ALERT_LEVELS = ["HIGH", "MEDIUM", "LOW"];
 export default function App() {
   const [posts, setPosts]   = useState([]);
   const [stats, setStats]   = useState(null);
-  const [loading, setLoading] = useState({ fetch: false, analyze: false, refresh: false });
+  const [loading, setLoading] = useState({ fetch: false, analyze: false });
   const [toast, setToast]   = useState(null);
   const [filters, setFilters] = useState({
     subreddit: "", classification: "", alert_level: "", search: "",
@@ -83,16 +83,6 @@ export default function App() {
       showToast(err.response?.data?.error || "AI analysis failed. Check your OpenAI API key.", "error");
     } finally {
       setLoading((l) => ({ ...l, analyze: false }));
-    }
-  };
-
-  const handleRefresh = async () => {
-    setLoading((l) => ({ ...l, refresh: true }));
-    try {
-      await loadData();
-      showToast("Dashboard refreshed.", "info");
-    } finally {
-      setLoading((l) => ({ ...l, refresh: false }));
     }
   };
 
@@ -162,7 +152,7 @@ export default function App() {
         </header>
 
         <main className="max-w-screen-2xl mx-auto px-6 py-6 space-y-6">
-          <ActionButtons loading={loading} onFetch={handleFetch} onAnalyze={handleAnalyze} onRefresh={handleRefresh} />
+          <ActionButtons loading={loading} onFetch={handleFetch} onAnalyze={handleAnalyze} />
           <KpiCards stats={stats} posts={posts} subreddits={SUBREDDITS} />
           <Filters
             filters={filters}
