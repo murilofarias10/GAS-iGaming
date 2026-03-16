@@ -1,0 +1,33 @@
+# Dependencies – installed fresh inside the container
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Built output – built fresh inside the container
+client/dist/
+client/build/
+client/.vite/
+
+# Environment variables – never bake secrets into the image
+.env
+server/.env
+client/.env
+**/.env.local
+**/.env.*.local
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp

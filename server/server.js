@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const { fetchAndSavePosts, readPosts, savePosts } = require("./redditService");
 const { analyzePosts } = require("./openaiService");
@@ -10,6 +11,10 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
+// Serve the built React frontend (production)
+const clientDist = path.join(__dirname, "../client/dist");
+app.use(express.static(clientDist));
 
 // ─────────────────────────────────────────────
 // POST /auth/verify  – Validate action password
@@ -154,6 +159,11 @@ app.delete("/posts/clear", async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
+});
+
+// Catch-all: serve the React app for any non-API route
+app.get("*", (req, res) => {
+  res.sendFile(path.join(clientDist, "index.html"));
 });
 
 app.listen(PORT, () => {

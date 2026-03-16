@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: geocomply-reddit-monitor
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: PASSWORD_PROTECTION
+        sync: false
