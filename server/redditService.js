@@ -148,19 +148,16 @@ async function fetchAndSavePosts() {
     }
   }
 
-  // Get existing IDs so we don't overwrite classifications
-  const incomingIds = allNewPosts.map((p) => p.id);
-  const { data: existingRows } = await supabase
-    .from("reddit_posts")
-    .select("id")
-    .in("id", incomingIds);
-
-  const existingIds = new Set((existingRows || []).map((r) => r.id));
-  const newOnly = allNewPosts.filter((p) => !existingIds.has(p.id));
-
-  if (newOnly.length > 0) {
-    const { error } = await supabase.from("reddit_posts").insert(newOnly);
+  // Upsert with ignoreDuplicates: existing rows (with classifications) are never
+  // overwritten — only brand-new posts are inserted.
+  let insertedCount = 0;
+  if (allNewPosts.length > 0) {
+    const { error, data } = await supabase
+      .from("reddit_posts")
+      .upsert(allNewPosts, { onConflict: "id", ignoreDuplicates: true })
+      .select("id");
     if (error) throw new Error(`Supabase insert failed: ${error.message}`);
+    insertedCount = data ? data.length : 0;
   }
 
   const { count } = await supabase
@@ -169,7 +166,7 @@ async function fetchAndSavePosts() {
 
   return {
     total: count || 0,
-    new_posts: newOnly.length,
+    new_posts: insertedCount,
     subreddits: RSS_FEEDS.map((f) => f.subreddit),
   };
 }
